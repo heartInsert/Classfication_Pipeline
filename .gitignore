@@ -4,6 +4,7 @@
 
 # IntelliJ project files
 .idea
+.model_weights
 *.iml
 out
 gen

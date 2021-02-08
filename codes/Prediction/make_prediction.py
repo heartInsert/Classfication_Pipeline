@@ -58,9 +58,8 @@ import gc
 
 
 def main():
-    os.environ["TOKENIZERS_PARALLELISM"] = "false"
     project_path = '/home/xjz/Desktop/Coding/PycharmProjects/competition/kaggle/cassava_leaf_disease_classification'
-    model_folders = ['2021_0108_09_4115_Resnet50']
+    model_folders = ['2021_0208_16_2708_efficientnet']
     data_csv = pd.read_csv('/home/xjz/Desktop/Coding/DL_Data/cassava_leaf_disease_classification/sample_submission.csv')
 
     model_folder_paths = [os.path.join(project_path, 'model_weights', folder) for folder in model_folders]
@@ -76,14 +75,14 @@ def main():
     final_predicts = []
     for config_path, model_folder_path in tqdm(zip(config_paths, model_folder_paths), total=len(model_folders)):
         cfg = Config.fromfile(config_path)
-        # get model class  and  dataset
-
         model = model_call(cfg['model_entity'])
         cfg.dataset_entity_predict['predict_csv'] = data_csv
         dataloader = Get_predict_dataloader(cfg)
-        #
-        model_predict = make_prediction(model_folder_path, model, dataloader, predict_way)
-        final_predicts.append(model_predict)
+        num_TTA = cfg.dataset_entity_predict.get('num_TTA', 1)
+        for TTA in range(num_TTA):
+            model_predict = make_prediction(model_folder_path, model, dataloader, predict_way)
+
+            final_predicts.append(model_predict)
         del model, dataloader, model_predict
         gc.collect()
     final_predicts = np.concatenate(final_predicts).mean(axis=0)
