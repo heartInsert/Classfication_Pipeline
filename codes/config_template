@@ -1,0 +1,17 @@
+model_name
+optimzier
+lr
+swa=False
+batch_size
+dataset=''
+num_wokers=0
+data_path=''
+loger_path=''
+ModelCheckpoint
+filepath=r'lightning_logs\test\temp', verbose=True, save_top_k=4,monitor='val_loss', mode='min'
+gpus=1, 
+max_epochs=5, 
+deterministic=True,
+amp_level='O2',
+precision16=False
+precision=16

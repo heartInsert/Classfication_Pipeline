@@ -1,0 +1,6 @@
+要求：
+
+１：结构层次清晰
+２：重用性高
+３：变化的东西都写成config
+４：tensorboard中能看到　train_epoch完后的 metric ,　validataion_epoch后的metric。

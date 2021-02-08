@@ -1,0 +1,19 @@
+baseline:0.863
+1:adamw => ranger :  0.878
+2:crossentropy=>focal loss  not good
+3:confusion matrix :   X
+4:FocalCosineLoss
+5:SymmetricCrossEntropyLoss :  not  good
+6:BiTemperedLoss
+7:LabelSmoothingLoss
+8:Resnext50_32x4d
+9:efficientnet b3
+10:t-sne 2D  embedding of  deep features at  the last  second  dense  layer
+11:change config train/test/predict Resize  to  cv2
+
+
+
+CutMix
+LabelSmoothCELoss 标签平滑增加泛化能力
+CBAM
+Rethinking the Value of Labels for Improving Class-Imbalanced Learning
