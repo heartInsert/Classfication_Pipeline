@@ -183,7 +183,7 @@ class FMixBase:
         self.lam = None
         self.loss_fc = loss_fc
 
-    def __call__(self, x):
+    def __call__(self, model, data, label, is_training):
         raise NotImplementedError
 
     def loss(self, *args, **kwargs):
@@ -252,18 +252,27 @@ class FMix(FMixBase):
                  loss_fc=nn.CrossEntropyLoss()):
         super().__init__(decay_power, alpha, size, max_soft, reformulate, loss_fc)
 
-    def __call__(self, x):
+    def __call__(self, model, data, label, is_training):
         # Sample mask and generate random permutation
-        lam, mask = sample_mask(self.alpha, self.decay_power, self.size, self.max_soft, self.reformulate)
-        index = torch.randperm(x.size(0)).to(x.device)
-        mask = torch.from_numpy(mask).float().to(x.device)
+        if is_training:
+            lam, mask = sample_mask(self.alpha, self.decay_power, self.size, self.max_soft, self.reformulate)
+            index = torch.randperm(data.size(0)).to(data.device)
+            mask = torch.from_numpy(mask).float().to(data.device)
 
-        # Mix the images
-        x1 = mask * x
-        x2 = (1 - mask) * x[index]
-        self.index = index
-        self.lam = lam
-        return x1 + x2
+            # Mix the images
+            x1 = mask * data
+            x2 = (1 - mask) * data[index]
+            self.index = index
+            self.lam = lam
+            data = x1 + x2
+        logits = model(data)
+        loss = self.loss(logits, label, is_training)
+        return logits, loss
 
-    def loss(self, y_pred, y, train=True):
-        return self.fmix_loss(y_pred, y, self.index, self.lam, train, self.reformulate)
+    def loss(self, y_pred, y, is_training=True):
+
+        if is_training and not self.reformulate:
+            y2 = y[self.index]
+            return self.loss_fc(y_pred, y) * self.lam + self.loss_fc(y_pred, y2) * (1 - self.lam)
+        else:
+            return self.loss_fc(y_pred, y)

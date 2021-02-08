@@ -31,9 +31,9 @@ class Cutmix:
 
         return bbx1, bby1, bbx2, bby2
 
-    def __call__(self, data, label):
+    def __call__(self, model, data, label, is_training):
         r = np.random.rand(1)
-        if self.beta > 0 and r < self.prob:
+        if is_training and self.beta > 0 and r < self.prob:
             self.cutmix = True
             # generate mixed sample
             lam = np.random.beta(self.beta, self.beta)
@@ -49,7 +49,9 @@ class Cutmix:
             self.target_a = None
             self.target_b = None
             self.lam = None
-        return data
+        logits = model(data)
+        loss = self.loss(logits, label)
+        return logits, loss
 
     def loss(self, logits, label):
         if self.cutmix:

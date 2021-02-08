@@ -48,7 +48,8 @@ class Accuracy_Metric(Metric):
 
 
 from codes.Myloss_function import loss_call
-from codes.Mytransforms import FMix, Cutmix
+
+from codes.Mymixway import FMix, Cutmix, training_call
 
 
 class LitMNIST(LightningModule):
@@ -64,11 +65,13 @@ class LitMNIST(LightningModule):
         self.val_loss = Loss_Metric(compute_on_step=False)
         self.train_Accuracy = Accuracy_Metric(compute_on_step=False)
         self.val_Accuracy = Accuracy_Metric(compute_on_step=False)
-        self.cutmix = False
-        self.cutmix_fun = Cutmix(beta=1, prob=1, loss_fc=self.loss_fc)
-        self.Fmix = False
-        self.Fmix_fun = FMix(loss_fc=self.loss_fc)
-        assert not (self.cutmix and self.Fmix)
+        kwargs['training_way']['training_way_args']['loss_fc'] = self.loss_fc
+        self.training_way = training_call(kwargs['training_way'])
+        # self.cutmix = False
+        # self.cutmix_fun = Cutmix(beta=1, prob=1, loss_fc=self.loss_fc)
+        # self.Fmix = False
+        # self.Fmix_fun = FMix(loss_fc=self.loss_fc)
+        # assert not (self.cutmix and self.Fmix)
 
     def train_dataloader(self):
         dataset_train = dataset_call(flag='train', kwargs=self.dataset_entity)
@@ -97,47 +100,30 @@ class LitMNIST(LightningModule):
         x = self.model_layer(data)
         return x
 
-    def rand_bbox(self, size, lam):
-        W = size[2]
-        H = size[3]
-        cut_rat = np.sqrt(1. - lam)
-        cut_w = np.int(W * cut_rat)
-        cut_h = np.int(H * cut_rat)
-
-        # uniform
-        cx = np.random.randint(W)
-        cy = np.random.randint(H)
-
-        bbx1 = np.clip(cx - cut_w // 2, 0, W)
-        bby1 = np.clip(cy - cut_h // 2, 0, H)
-        bbx2 = np.clip(cx + cut_w // 2, 0, W)
-        bby2 = np.clip(cy + cut_h // 2, 0, H)
-
-        return bbx1, bby1, bbx2, bby2
-
     def step(self, batch):
         data, label = batch[:-1], batch[-1]
         if len(data) == 1:
             data = data[0]
-        if self.training:
-            assert not (self.cutmix and self.Fmix)
-            if self.cutmix:
-                data = self.cutmix_fun(data, label)
-                # compute output
-                logits = self(data)
-                loss = self.cutmix_fun.loss(logits, label)
-            elif self.Fmix:
-                data = self.Fmix_fun(data)
-                logits = self(data)
-                loss = self.Fmix_fun.loss(logits, label)
-            else:
-                logits = self(data)
-                loss = self.loss_fc(logits, label)
-
-        else:
-            # compute output
-            logits = self(data)
-            loss = self.loss_fc(logits, label)
+        logits, loss = self.training_way(self, data, label, self.training)
+        # if self.training:
+        #     assert not (self.cutmix and self.Fmix)
+        #     if self.cutmix:
+        #         data = self.cutmix_fun(data, label)
+        #         # compute output
+        #         logits = self(data)
+        #         loss = self.cutmix_fun.loss(logits, label)
+        #     elif self.Fmix:
+        #         data = self.Fmix_fun(data)
+        #         logits = self(data)
+        #         loss = self.Fmix_fun.loss(logits, label)
+        #     else:
+        #         logits = self(data)
+        #         loss = self.loss_fc(logits, label)
+        #
+        # else:
+        #     # compute output
+        #     logits = self(data)
+        #     loss = self.loss_fc(logits, label)
         return loss, logits, label
 
     def training_step(self, batch, batch_idx):
@@ -170,7 +156,6 @@ class LitMNIST(LightningModule):
 
 
 from sklearn.model_selection import StratifiedKFold
-import numpy as np
 import pandas as pd
 import scikitplot as skplt
 import matplotlib.pyplot as plt

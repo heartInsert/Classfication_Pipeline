@@ -103,15 +103,6 @@ optimzier_entity = dict(
         use_gc=False,
     )
 )
-# lr schdule setting
-# lrschdule_entity = dict(
-#     lrschdule_name='Linear_schedule_with_warmup',
-#     lrschdule_args=dict(
-#         num_warmup_steps=3 if Train_mode else 1,
-#         num_training_steps=trainer_entity['max_epochs'],
-#         last_epoch=-1
-#     )
-# )
 lrschdule_entity = dict(
     lrschdule_name='polynomial_decay_schedule_with_warmup',
     lrschdule_args=dict(
@@ -122,7 +113,11 @@ lrschdule_entity = dict(
         last_epoch=-1
     )
 )
-
+training_way = dict(
+    training_way_name='FMix',
+    # optional  Fimix or cutmix
+    training_way_args=dict()
+)
 swa = False
 # logger_setting
 logger_entity = dict(
