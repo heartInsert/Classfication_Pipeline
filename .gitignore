@@ -18,3 +18,4 @@ gen
 将删除 codes/Mytransforms/__pycache__/
 将删除 codes/__pycache__/
 将删除 result/
+将删除 model_weights/2021_0208_16_2708_efficientnet/
