@@ -141,11 +141,6 @@ class LitMNIST(LightningModule):
         return loss, logits, label
 
     def training_step(self, batch, batch_idx):
-        # input_ids, token_type_ids, attention_mask, y = batch
-        # data_dict = {'input_ids': input_ids, 'token_type_ids': token_type_ids, 'attention_mask': attention_mask}
-        # logits = self(data_dict)
-        # # compute loss
-        # loss = self.loss_fc(logits, y)
         loss, logits, y = self.step(batch)
         # add log
         self.log('train_loss_step', loss, on_step=True, on_epoch=False, prog_bar=False, logger=True)
@@ -161,11 +156,6 @@ class LitMNIST(LightningModule):
         self.train_Accuracy.reset()
 
     def validation_step(self, batch, batch_idx):
-        # input_ids, token_type_ids, attention_mask, y = batch
-        # data_dict = {'input_ids': input_ids, 'token_type_ids': token_type_ids, 'attention_mask': attention_mask}
-        # logits = self(data_dict)
-        # # compute loss
-        # loss = self.loss_fc(logits, y)
         loss, logits, y = self.step(batch)
         # add log
         self.val_loss(loss, len(y))
