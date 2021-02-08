@@ -114,7 +114,7 @@ lrschdule_entity = dict(
     )
 )
 training_way = dict(
-    training_way_name='FMix',
+    training_way_name='Normal_training',
     # optional  Fimix or cutmix
     training_way_args=dict()
 )
