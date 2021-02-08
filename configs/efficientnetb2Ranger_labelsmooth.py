@@ -68,10 +68,11 @@ dataset_entity_predict = dict(
     dataset_name='classification_predict_dataset',
     predict_transforms=transforms.Compose([
         lambda data_path: read_from_cv2_and_resize(data_path),
-        # transforms.Resize((height, width)),
+        transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
         transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-    ])
+    ]),
+    num_TTA=3,
 )
 dataloader_entity = dict(
     batch_size=45,
