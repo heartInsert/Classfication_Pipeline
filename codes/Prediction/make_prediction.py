@@ -80,6 +80,7 @@ def main():
         dataloader = Get_predict_dataloader(cfg)
         num_TTA = cfg.dataset_entity_predict.get('num_TTA', 1)
         for TTA in range(num_TTA):
+
             model_predict = make_prediction(model_folder_path, model, dataloader, predict_way)
 
             final_predicts.append(model_predict)
