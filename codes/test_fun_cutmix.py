@@ -67,11 +67,6 @@ class LitMNIST(LightningModule):
         self.val_Accuracy = Accuracy_Metric(compute_on_step=False)
         kwargs['training_way']['training_way_args']['loss_fc'] = self.loss_fc
         self.training_way = training_call(kwargs['training_way'])
-        # self.cutmix = False
-        # self.cutmix_fun = Cutmix(beta=1, prob=1, loss_fc=self.loss_fc)
-        # self.Fmix = False
-        # self.Fmix_fun = FMix(loss_fc=self.loss_fc)
-        # assert not (self.cutmix and self.Fmix)
 
     def train_dataloader(self):
         dataset_train = dataset_call(flag='train', kwargs=self.dataset_entity)
@@ -105,25 +100,6 @@ class LitMNIST(LightningModule):
         if len(data) == 1:
             data = data[0]
         logits, loss = self.training_way(self, data, label, self.training)
-        # if self.training:
-        #     assert not (self.cutmix and self.Fmix)
-        #     if self.cutmix:
-        #         data = self.cutmix_fun(data, label)
-        #         # compute output
-        #         logits = self(data)
-        #         loss = self.cutmix_fun.loss(logits, label)
-        #     elif self.Fmix:
-        #         data = self.Fmix_fun(data)
-        #         logits = self(data)
-        #         loss = self.Fmix_fun.loss(logits, label)
-        #     else:
-        #         logits = self(data)
-        #         loss = self.loss_fc(logits, label)
-        #
-        # else:
-        #     # compute output
-        #     logits = self(data)
-        #     loss = self.loss_fc(logits, label)
         return loss, logits, label
 
     def training_step(self, batch, batch_idx):
@@ -201,7 +177,9 @@ def plot_confusion_matrix(pred, target, normalize, save_path):
 
 if __name__ == "__main__":
 
-    config_path = r'/home/xjz/Desktop/Coding/PycharmProjects/competition/kaggle/cassava_leaf_disease_classification/configs/efficientnetb2Ranger_labelsmooth.py'
+    config_dir = r'/home/xjz/Desktop/Coding/PycharmProjects/competition/kaggle/cassava_leaf_disease_classification/configs'
+    cofig_name = 'Seresnet50Ranger_labelsmooth.py'
+    config_path = os.path.join(config_dir, cofig_name)
     seed_everything(2020)
     # get config
     cfg = Config.fromfile(config_path)

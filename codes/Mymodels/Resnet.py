@@ -2,6 +2,7 @@ from torchvision.models import resnet50, resnext50_32x4d
 import torch
 from torch.nn.parameter import Parameter
 import torch.nn.functional as F
+import timm
 
 
 class Resnet50(torch.nn.Module):
@@ -37,6 +38,7 @@ class GeM(torch.nn.Module):
         return self.__class__.__name__ + '(' + 'p=' + '{:.4f}'.format(self.p) + ', ' + 'eps=' + str(
             self.eps) + ')'
 
+
 #
 # model = se_resnet50(num_classes=1000, pretrained='imagenet')
 # model.avg_pool = GeM()
@@ -54,4 +56,18 @@ class Resnext50_32x4d(torch.nn.Module):
         if isinstance(data, list):
             data = data[0]
         out = self.layer1(data)
+        return out
+
+
+class Seresnet50(torch.nn.Module):
+    def __init__(self, kwargs):
+        super(Seresnet50, self).__init__()
+        self.num_class = kwargs['num_class']
+        self.model = timm.create_model('seresnet50', num_classes=self.num_class,
+                                       pretrained=kwargs['pretrained'])
+
+    def forward(self, data):
+        if isinstance(data, list):
+            data = data[0]
+        out = self.model(data)
         return out

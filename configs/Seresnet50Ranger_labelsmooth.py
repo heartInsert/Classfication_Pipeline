@@ -7,8 +7,7 @@ height, width = 300, 400
 kfold = 5
 # model setting
 model_entity = dict(
-    model_name='efficientnet',
-    model_version='efficientnet-b2',
+    model_name='Seresnet50',
     pretrained=True,
     pretrained_dir=None,
     num_class=5)

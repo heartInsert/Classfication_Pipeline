@@ -1,4 +1,4 @@
-from codes.Mymodels.Resnet import Resnet50, Resnext50_32x4d
+from codes.Mymodels.Resnet import Resnet50, Resnext50_32x4d, Seresnet50
 from codes.Mymodels.Efficientnet import efficientnet
 
 # from codes.Mymodels.Bert_chinese import Bert_Chinese_Model
@@ -7,6 +7,7 @@ model_dict = {
     'Resnet50': Resnet50,
     'efficientnet': efficientnet,
     'Resnext50_32x4d': Resnext50_32x4d,
+    'Seresnet50': Seresnet50,
 }
 
 

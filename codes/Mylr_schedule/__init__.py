@@ -16,6 +16,8 @@ lrschdule_dict = {
 def lrschdule_call(optimizer, kwargs):
     lrschdule_name = kwargs['lrschdule_name']
     lrschdule_args = kwargs['lrschdule_args']
+    SWA_args = kwargs['SWA']
     assert lrschdule_name in lrschdule_dict.keys()
     lrschduler = lrschdule_dict[lrschdule_name](**{'optimizer': optimizer, **lrschdule_args})
+    # lrschduler = My_SWALR(lrschduler)
     return lrschduler
