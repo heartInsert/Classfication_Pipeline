@@ -13,7 +13,7 @@ class efficientnet(torch.nn.Module):
             self.model = EfficientNet.from_name(model_name=kwargs['model_version'], num_classes=kwargs['num_class'])
 
     def forward(self, data):
-        if len(data) == 1:
+        if isinstance(data, list) and len(data) == 1:
             data = data[0]
         out = self.model(data)
         return out

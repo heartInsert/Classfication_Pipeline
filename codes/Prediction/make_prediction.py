@@ -59,7 +59,7 @@ import gc
 
 def main():
     project_path = '/home/xjz/Desktop/Coding/PycharmProjects/competition/kaggle/cassava_leaf_disease_classification'
-    model_folders = ['2021_0208_16_2708_efficientnet']
+    model_folders = ['2021_0210_10_0306_efficientnet']
     data_csv = pd.read_csv('/home/xjz/Desktop/Coding/DL_Data/cassava_leaf_disease_classification/sample_submission.csv')
 
     model_folder_paths = [os.path.join(project_path, 'model_weights', folder) for folder in model_folders]
@@ -78,11 +78,13 @@ def main():
         model = model_call(cfg['model_entity'])
         cfg.dataset_entity_predict['predict_csv'] = data_csv
         dataloader = Get_predict_dataloader(cfg)
+
         num_TTA = cfg.dataset_entity_predict.get('num_TTA', 1)
         for TTA in range(num_TTA):
             model_predict = make_prediction(model_folder_path, model, dataloader, predict_way)
 
             final_predicts.append(model_predict)
+
         del model, dataloader, model_predict
         gc.collect()
     final_predicts = np.concatenate(final_predicts).mean(axis=0)

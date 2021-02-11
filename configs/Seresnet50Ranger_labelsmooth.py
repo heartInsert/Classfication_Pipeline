@@ -71,7 +71,7 @@ dataset_entity_predict = dict(
         transforms.ToTensor(),
         transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
     ]),
-    num_TTA=3,
+    num_TTA=2,
 )
 dataloader_entity = dict(
     batch_size=45,
@@ -82,7 +82,7 @@ dataloader_entity = dict(
 # Trainer setting
 trainer_entity = dict(
     gpus=1,
-    max_epochs=13 if Train_mode else 4,
+    max_epochs=20 if Train_mode else 4,
     check_val_every_n_epoch=1,
     deterministic=True,
     amp_level='O2',

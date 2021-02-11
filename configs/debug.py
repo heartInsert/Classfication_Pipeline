@@ -1,7 +1,7 @@
 import os
 from PIL import Image
 
-Train_mode = True
+Train_mode = False
 current_dir = r'/home/xjz/Desktop/Coding/PycharmProjects/competition/kaggle/cassava_leaf_disease_classification'
 height, width = 300, 400
 kfold = 5
@@ -83,11 +83,12 @@ dataloader_entity = dict(
 # Trainer setting
 trainer_entity = dict(
     gpus=1,
-    max_epochs=20 if Train_mode else 4,
+    max_epochs=3 if Train_mode else 4,
     check_val_every_n_epoch=1,
     deterministic=True,
     amp_level='O2',
     precision=16,
+    # default_root_dir=os.getcwd() + '/model_checkpoint/' + model_entity['model_name']
 )
 # loss setting
 loss_fc_entity = dict(
@@ -105,7 +106,7 @@ optimzier_entity = dict(
 lrschdule_entity = dict(
     lrschdule_name='polynomial_decay_schedule_with_warmup',
     lrschdule_args=dict(
-        num_warmup_steps=3 if Train_mode else 2,
+        num_warmup_steps=1 if Train_mode else 2,
         num_training_steps=trainer_entity['max_epochs'],
         lr_end=1e-6,
         power=1.2,
@@ -113,7 +114,7 @@ lrschdule_entity = dict(
     ),
     SWA=dict(
         SWA_enable=True,
-        SWA_start_epoch=5,
+        SWA_start_epoch=1,
     )
 )
 training_way = dict(
@@ -121,6 +122,7 @@ training_way = dict(
     # optional  Fimix or cutmix
     training_way_args=dict()
 )
+swa = False
 # logger_setting
 logger_entity = dict(
     weight_savepath=os.path.join(current_dir, 'model_weights'),

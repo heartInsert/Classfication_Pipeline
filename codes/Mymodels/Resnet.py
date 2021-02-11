@@ -14,7 +14,7 @@ class Resnet50(torch.nn.Module):
         self.layer1.fc = self.layer2
 
     def forward(self, data):
-        if len(data) == 1:
+        if isinstance(data, list) and len(data) == 1:
             data = data[0]
         out = self.layer1(data)
         return out
@@ -53,7 +53,7 @@ class Resnext50_32x4d(torch.nn.Module):
         self.layer1.fc = self.layer2
 
     def forward(self, data):
-        if isinstance(data, list):
+        if isinstance(data, list) and len(data) == 1:
             data = data[0]
         out = self.layer1(data)
         return out
@@ -67,7 +67,7 @@ class Seresnet50(torch.nn.Module):
                                        pretrained=kwargs['pretrained'])
 
     def forward(self, data):
-        if isinstance(data, list):
+        if isinstance(data, list) and len(data) == 1:
             data = data[0]
         out = self.model(data)
         return out

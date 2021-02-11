@@ -17,3 +17,6 @@ CutMix
 LabelSmoothCELoss 标签平滑增加泛化能力
 CBAM
 Rethinking the Value of Labels for Improving Class-Imbalanced Learning
+SWA，一种是一直降低学习率，一种是在最后固定学习率
+
+
