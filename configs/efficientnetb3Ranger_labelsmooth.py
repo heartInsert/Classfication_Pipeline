@@ -72,7 +72,7 @@ dataset_entity_predict = dict(
         transforms.ToTensor(),
         transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
     ]),
-    num_TTA=3,
+    num_TTA=2,
 )
 dataloader_entity = dict(
     batch_size=35,
@@ -83,12 +83,11 @@ dataloader_entity = dict(
 # Trainer setting
 trainer_entity = dict(
     gpus=1,
-    max_epochs=13 if Train_mode else 4,
+    max_epochs=20 if Train_mode else 4,
     check_val_every_n_epoch=1,
     deterministic=True,
     amp_level='O2',
     precision=16,
-    # default_root_dir=os.getcwd() + '/model_checkpoint/' + model_entity['model_name']
 )
 # loss setting
 loss_fc_entity = dict(
@@ -103,15 +102,6 @@ optimzier_entity = dict(
         use_gc=False,
     )
 )
-# lr schdule setting
-# lrschdule_entity = dict(
-#     lrschdule_name='Linear_schedule_with_warmup',
-#     lrschdule_args=dict(
-#         num_warmup_steps=3 if Train_mode else 1,
-#         num_training_steps=trainer_entity['max_epochs'],
-#         last_epoch=-1
-#     )
-# )
 lrschdule_entity = dict(
     lrschdule_name='polynomial_decay_schedule_with_warmup',
     lrschdule_args=dict(
@@ -120,10 +110,17 @@ lrschdule_entity = dict(
         lr_end=1e-6,
         power=1.2,
         last_epoch=-1
+    ),
+    SWA=dict(
+        SWA_enable=True,
+        SWA_start_epoch=5,
     )
 )
-
-swa = False
+training_way = dict(
+    training_way_name='Normal_training',
+    # optional  Fimix or cutmix
+    training_way_args=dict()
+)
 # logger_setting
 logger_entity = dict(
     weight_savepath=os.path.join(current_dir, 'model_weights'),

@@ -189,7 +189,7 @@ def plot_confusion_matrix(pred, target, normalize, save_path):
 if __name__ == "__main__":
 
     config_dir = r'/home/xjz/Desktop/Coding/PycharmProjects/competition/kaggle/cassava_leaf_disease_classification/configs'
-    cofig_name = 'efficientnetb2Ranger_labelsmooth.py'
+    cofig_name = 'efficientnetb3Ranger_labelsmooth.py'
     # cofig_name = 'debug.py'
     config_path = os.path.join(config_dir, cofig_name)
     seed_everything(2020)
